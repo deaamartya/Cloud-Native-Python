@@ -3,8 +3,10 @@ from datetime import datetime
 from flask_cors import CORS, cross_origin
 import sqlite3, secrets, flask
 
-app = Flask(__name__, template_folder='template')
+app = Flask(__name__)
+app.config.from_object(__name__)
 app.secret_key = secrets.token_urlsafe(16)
+app.template_folder = 'template'
 CORS(app)
 
 @app.route("/")
@@ -45,11 +47,10 @@ def cookie_insertion():
 	response.set_cookie('my_cookie',value=session['name'])
 	return response
 
-#@app.route('/read_cookie')
-#def get_cookie():
-#	return flask.request.cookies.get('my_cookie')
+@app.route('/read_cookie')
+def get_cookie():
+	return flask.request.cookies.get('my_cookie')
 
-#api
 @app.route("/api/v1/info")
 def home_index():
 	conn = sqlite3.connect('mydb.db')
@@ -88,7 +89,7 @@ def list_users():
 
 @app.route("/api/v1/users/<int:user_id>", methods=["GET"])
 def get_user(user_id):
-        return list_user(user_id)
+    return list_user(user_id)
 
 def list_user(user_id):
 	conn = sqlite3.connect('mydb.db')
@@ -122,6 +123,7 @@ def create_user():
 		'password': request.json['password']
 		}
 	return jsonify({'status': add_user(user)}), 201
+
 def add_user(new_user):
 	conn = sqlite3.connect('mydb.db')
 	print ("Opened database successfully")
@@ -173,6 +175,7 @@ def update_user(user_id):
 		user[i] = request.json[i]
 	print (user)
 	return jsonify({'status': upd_user(user)}), 200
+
 def upd_user(user):
 	conn = sqlite3.connect('mydb.db')
 	print ("Opened database successfully")
