@@ -226,3 +226,6 @@ def list_tweet(user_id):
 		user['tweet_time'] = data[0][3]
 	conn.close()
 	return jsonify(user)
+
+if __name__ == "__main__":
+	app.run(host='127.0.0.1', port=5000, debug=True)
