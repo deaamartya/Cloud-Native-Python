@@ -1,17 +1,59 @@
-from flask import Flask
-from flask import jsonify
-import sqlite3
+from flask import Flask, jsonify, make_response, abort, request, render_template, session, redirect, url_for
+from datetime import datetime
+from flask_cors import CORS, cross_origin
+import sqlite3, secrets, flask
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
+app.secret_key = secrets.token_urlsafe(16)
+CORS(app)
 
 @app.route("/")
-def home():
-    return "Hello, Flask!"
+def main():
+	return render_template('main.html')
 
+#html
+@app.route('/addname')
+def addname():
+	if request.args.get('yourname'):
+		session['name'] = request.args.get('yourname')
+		# And then redirect the user to the main page
+		return redirect(url_for('main'))
+	else:
+		return render_template('addname.html', session=session)
+
+@app.route('/addtweets')
+def addtweetjs():
+	return render_template('addtweets.html')
+
+@app.route('/adduser')
+def adduser():
+	return render_template('adduser.html')
+
+#clear session
+@app.route('/clear')
+def clearsession():
+	# Clear the session
+	session.clear()
+	# Redirect the user to the main page
+	return redirect(url_for('main'))
+
+#set cookie
+@app.route('/set_cookie')
+def cookie_insertion():
+	redirect_to_main = redirect('/')
+	response = app.make_response(redirect_to_main)
+	response.set_cookie('my_cookie',value=session['name'])
+	return response
+
+#@app.route('/read_cookie')
+#def get_cookie():
+#	return flask.request.cookies.get('my_cookie')
+
+#api
 @app.route("/api/v1/info")
 def home_index():
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
+	print ("Opened database successfully")
 	api_list=[]
 	cursor = conn.execute("SELECT buildtime, version, methods, links from apirelease")
 	for row in cursor:
@@ -30,7 +72,7 @@ def get_users():
 
 def list_users():
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
+	print ("Opened database successfully")
 	api_list=[]
 	cursor = conn.execute("SELECT username, full_name, emailid, password, id from users")
 	for row in cursor:
@@ -50,7 +92,7 @@ def get_user(user_id):
 
 def list_user(user_id):
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
+	print ("Opened database successfully")
 	cursor = conn.cursor()
 	query = """SELECT * from users where id=?"""
 	cursor.execute(query, (user_id,))
@@ -65,14 +107,10 @@ def list_user(user_id):
 		conn.close()
 		return jsonify(user)
 
-from flask import make_response
-from flask import abort
-
 @app.errorhandler(404)
 def resource_not_found(error):
 	return make_response(jsonify({'error':'Resource not found!'}), 404)
 
-from flask import request
 @app.route('/api/v1/users', methods=['POST'])
 def create_user():
 	if not request.json or not 'username' in request.json or not 'email' in request.json or not 'password' in request.json:
@@ -86,8 +124,7 @@ def create_user():
 	return jsonify({'status': add_user(user)}), 201
 def add_user(new_user):
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
-	api_list=[]
+	print ("Opened database successfully")
 	cursor=conn.cursor()
 	cursor.execute("SELECT * from users where username=? or emailid=?",(new_user['username'],new_user['email']))
 	data = cursor.fetchall()
@@ -113,7 +150,7 @@ def delete_user():
 
 def del_user(del_user):
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
+	print ("Opened database successfully")
 	cursor=conn.cursor()
 	cursor.execute("SELECT * from users where username=? ",(del_user,))
 	data = cursor.fetchall()
@@ -161,7 +198,7 @@ def get_tweets():
 
 def list_tweets():
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
+	print ("Opened database successfully")
 	api_list=[]
 	cursor = conn.execute("SELECT username, body, tweet_time, id from tweets")
 	data = cursor.fetchall()
@@ -173,13 +210,12 @@ def list_tweets():
 			tweets['tweet_time'] = row[2]
 			tweets['id'] = row[3]
 			api_list.append(tweets)
-			print ("Appended successfully");
+		print ("Appended successfully")
 	else:
 		return api_list
 	conn.close()
 	return jsonify({'tweets_list': api_list})
 
-from datetime import datetime
 @app.route('/api/v2/tweets', methods=['POST'])
 def add_tweets():
 	user_tweet = {}
@@ -193,7 +229,7 @@ def add_tweets():
 
 def add_tweet(new_tweets):
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
+	print ("Opened database successfully")
 	cursor=conn.cursor()
 	cursor.execute("SELECT * from users where username=? ",(new_tweets['username'],))
 	data = cursor.fetchall()
@@ -210,8 +246,7 @@ def get_tweet(id):
 def list_tweet(user_id):
 	print (user_id)
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
-	api_list=[]
+	print ("Opened database successfully")
 	cursor=conn.cursor()
 	cursor.execute("SELECT * from tweets where id=?",(user_id,))
 	data = cursor.fetchall()
