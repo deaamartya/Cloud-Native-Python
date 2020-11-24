@@ -175,7 +175,7 @@ def update_user(user_id):
 	return jsonify({'status': upd_user(user)}), 200
 def upd_user(user):
 	conn = sqlite3.connect('mydb.db')
-	print ("Opened database successfully");
+	print ("Opened database successfully")
 	cursor=conn.cursor()
 	cursor.execute("SELECT * from users where id=? ",(user['id'],))
 	data = cursor.fetchall()
