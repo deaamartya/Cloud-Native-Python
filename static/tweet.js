@@ -28,7 +28,7 @@ function TweetListViewModel() {
                 contentType: 'application/json',
                 type: 'POST',
                 data: JSON.stringify({
-                    'username': self.username(),
+                    'tweetedby': self.username(),
                     'body': self.body(),
                 }),
                 success: function(data) {

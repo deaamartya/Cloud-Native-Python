@@ -29,7 +29,6 @@ class Main extends Component{
       contentType: 'application/json',
       type: 'POST',
       data: JSON.stringify({
-      'tweetedby': "deaamartya",
       'body': tweet,
       }),
       success: function(data) {

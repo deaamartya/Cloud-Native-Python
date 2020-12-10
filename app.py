@@ -225,12 +225,12 @@ def list_tweets():
 @app.route('/api/v2/tweets', methods=['POST'])
 def add_tweets():
 	user_tweet = {}
-	if not request.json or not 'tweetedby' in request.json or not 'body' in request.json:
+	if not 'body' in request.json:
 		abort(400)
 	user_tweet = {
 		'body': request.json['body'],
 		'timestamp': datetime.now().strftime('%d-%m-%Y %H:%M:%SZ'),
-		'tweetedby': request.json['tweetedby'],
+		'tweetedby': session['username'],
 		'id': random.randint(1,1000)
 	}
 	return jsonify({"status":add_tweet(user_tweet)})
@@ -275,7 +275,7 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def do_admin_login():
-	users = connection.db.users
+	users = connection.cloud_native.users
 	api_list=[]
 	login_user = users.find({'username': request.form['username']})
 	for i in login_user:
@@ -294,11 +294,12 @@ def do_admin_login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method=='POST':
-		users = connection.db.users
+		users = connection.cloud_native.users
 		api_list=[]
 		existing_user = users.find({'$or': [{"username":request.form['username']} ,{"email":request.form['email']}]})
 		for i in existing_user:
 			api_list.append(str(i))
+		print(api_list)
 		if api_list == []:
 			users.insert({
 				"email": request.form['email'],
@@ -309,14 +310,15 @@ def signup():
 			})
 			session['username'] = request.form['username']
 			return redirect(url_for('home'))
-		return 'That user already exists'
+		else :
+			return 'That user already exists'
 	else :
 		return render_template('signup.html')
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
 	if request.method=='POST':
-		users = connection.db.users
+		users = connection.cloud_native.users
 		api_list=[]
 		existing_users = users.find({"username":session['username']})
 		for i in existing_users:
@@ -333,7 +335,7 @@ def profile():
 			return 'User not found!'
 		return redirect(url_for('home'))
 	if request.method=='GET':
-		users = connection.db.users
+		users = connection.cloud_native.users
 		user=[]
 		print (session['username'])
 		existing_user = users.find({"username":session['username']})
