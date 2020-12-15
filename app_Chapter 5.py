@@ -213,7 +213,7 @@ def list_tweets():
 	api_list=[]
 	dict = {}
 	db = connection.cloud_native
-	for row in db.tweets.find().sort({'timestamp': -1}) :
+	for row in db.tweets.find():
 		dict = {}
 		dict['id'] = row['id']
 		dict['timestamp'] = row['timestamp']
@@ -229,7 +229,7 @@ def add_tweets():
 		abort(400)
 	user_tweet = {
 		'body': request.json['body'],
-		'timestamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
+		'timestamp': datetime.now().strftime('%d-%m-%Y %H:%M:%SZ'),
 		'tweetedby': session['username'],
 		'id': random.randint(1,1000)
 	}

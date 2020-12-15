@@ -6,6 +6,9 @@
   "dependencies": {
     "babel-preset-react": "^6.24.1",
     "fbjs": "^3.0.0",
+    "flux": "^4.0.0",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.32",
     "object-assign": "^4.1.1",
     "react": "^17.0.1",
     "react-dev": "^0.0.1",

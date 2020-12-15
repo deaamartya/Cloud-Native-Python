@@ -1,14 +1,19 @@
 import { createRef } from 'react'
+import TActions from "../actions/Tactions.jsx"
+
 export default class Tweet extends React.Component {
     constructor(props) {
         super(props);
         this.tweetTextArea = createRef();
     }
+
     sendTweet(event){
         event.preventDefault();
-        this.props.sendTweet(this.tweetTextArea.current.value);
+        // this.props.sendTweet(this.tweetTextArea.current.value);
+        TActions.sendTweet(this.tweetTextArea.current.value);
         this.tweetTextArea.current.value = '';
     }
+
     render(){
         return(
             <div className="row">
