@@ -213,7 +213,7 @@ def list_tweets():
 	api_list=[]
 	dict = {}
 	db = connection.cloud_native
-	for row in db.tweets.find().sort({'timestamp': -1}) :
+	for row in db.tweets.find() :
 		dict = {}
 		dict['id'] = row['id']
 		dict['timestamp'] = row['timestamp']
