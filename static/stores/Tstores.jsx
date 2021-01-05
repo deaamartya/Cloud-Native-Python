@@ -1,13 +1,11 @@
 import { EventEmitter } from "events";
 import ActionTypes from "../constants.jsx";
 import AppDispatcher from '../dispatcher.jsx';
-import moment from "moment-timezone";
 
 let _tweets = []
 const CHANGE_EVENT = "CHANGE";
 class TweetEventEmitter extends EventEmitter{
     getAll(){
-        moment.tz.setDefault("Asia/Jakarta");
         let updatelist = _tweets.map(tweet => {
             var time = moment(tweet.timestamp).subtract("07:00");
             tweet.updatedate = time.fromNow();

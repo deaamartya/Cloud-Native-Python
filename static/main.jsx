@@ -4,57 +4,6 @@ import ReactDOM from 'react-dom';
 import Tweet from "./components/Tweet.jsx";
 import TweetList from "./components/TweetList.jsx";
 import TStore from "./stores/Tstores.jsx";
-// class Main extends Component{
-//   constructor(){
-//     super();
-//     this.state = { userId: 1 };
-//     this.state = { tweets: [] };
-//     this.getData = this.getData.bind(this);
-//   }
-
-//   getData() {
-//     var self=this;
-//     $.getJSON('/api/v2/tweets', function(tweetModels) {
-//       self.setState({tweets: tweetModels})
-//     });
-//   }
-
-//   componentDidMount(){
-//     this.getData()
-//   }
-
-//   addTweet(tweet){
-//     var self = this
-//     $.ajax({
-//       url: '/api/v2/tweets',
-//       contentType: 'application/json',
-//       type: 'POST',
-//       data: JSON.stringify({
-//       'body': tweet,
-//       }),
-//       success: function(data) {
-//         self.getData()
-//       }
-//     });
-//   }
-
-//   updatetweets(tweets){
-//     let updatelist = tweets.map(tweet => {
-//       tweet.updatedate = moment(tweet.timestamp).fromNow();
-//       return tweet;
-//     });
-//   }
-  
-//   render(){
-//     return (
-//       <div>
-//         <Tweet sendTweet={this.addTweet.bind(this)}/>
-//         <TweetList tweets={this.state.tweets}/>
-//       </div>
-//     );
-//   }
-// }
-
 import TActions from "./actions/Tactions.jsx";
 
 TActions.getAllTweets();
