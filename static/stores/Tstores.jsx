@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import ActionTypes from "../constants.jsx";
 import AppDispatcher from '../dispatcher.jsx';
+import moment from "moment";
 
 let _tweets = []
 const CHANGE_EVENT = "CHANGE";
